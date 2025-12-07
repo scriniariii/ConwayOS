@@ -1,3 +1,6 @@
+# ConwayOS - OS for playing Conway's Game of Life
+
+<pre><code>
 ConwayOS/
 │
 ├── src/
@@ -13,7 +16,7 @@ ConwayOS/
 │   │   └── game_life.h
 │   │
 │   ├── drivers/
-│   │   ├── keyboard.c      # para agregar o matar celulas
+│   │   ├── keyboard.c      
 │   │   └── keyboard.h
 │   │
 │   └── util/
@@ -21,8 +24,8 @@ ConwayOS/
 │       ├── memcpy.c
 │       └── types.h
 │
-├── build/
-│   ├── kernel.o            # Se genera al compilar
+├── build/              # Se genera al compilar
+│   ├── kernel.o            
 │   ├── boot.o
 │   ├── graphics.o
 |
@@ -30,10 +33,9 @@ ConwayOS/
 │   ├── boot/
 │   │   ├── grub/
 │   │   │   └── grub.cfg    # Menú de GRUB
-│   │   └── kernel.bin      # Kernel final
+│   │   └── kernel.bin      # Kernel final (se genera al compilar)
 │
 ├── Makefile
-|-- build.sh # script para construir todo rapidamente
 │
 └── README.md               # Cómo compilar y ejecutar
-
+</code></pre>
