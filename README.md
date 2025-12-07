@@ -23,19 +23,10 @@ ConwayOS/
 │       ├── memset.c
 │       ├── memcpy.c
 │       └── types.h
-│
-├── build/              # Se genera al compilar
-│   ├── kernel.o            
-│   ├── boot.o
-│   ├── graphics.o
-|
 ├── iso/
 │   ├── boot/
 │   │   ├── grub/
 │   │   │   └── grub.cfg    # Menú de GRUB
-│   │   └── kernel.bin      # Kernel final (se genera al compilar)
 │
-├── Makefile
-│
-└── README.md               # Cómo compilar y ejecutar
+└── Makefile
 </code></pre>
