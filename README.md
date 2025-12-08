@@ -12,8 +12,8 @@ ConwayOS/
 │   │   ├── kernel.c        # Punto de entrada del kernel
 │   │   ├── graphics.c      # Funciones de video
 │   │   ├── graphics.h
-│   │   ├── game_life.c     # Conway
-│   │   └── game_life.h
+│   │   ├── conway.c     # Conway
+│   │   └── conway.h
 │   │
 │   ├── drivers/
 │   │   ├── keyboard.c      
