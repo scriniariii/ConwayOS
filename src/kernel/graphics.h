@@ -39,4 +39,5 @@ void clear_screen(void);
 void print(const char* str, int row, int col, enum vga_color fg, enum vga_color bg);
 void opening(void);
 
+
 #endif // GRAPHICS_H

@@ -5,22 +5,27 @@ LD = ld
 
 # flags
 ASFLAGS = --32
-CFLAGS = -m32 -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-pic -nostdlib -lgcc
+#CFLAGS = -m32 -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-pic -nostdlib -lgcc
+CFLAGS = -m32 -ffreestanding -O0 -Wall -Wextra -fno-exceptions -fno-pic -nostdlib
 LDFLAGS = -m elf_i386 -T src/boot/linker.ld -nostdlib
 
-# airectorios
+# directorios
 BUILD_DIR = build
 ISO_DIR = iso
 SRC_DIR = src
 
 # archivos fuente
 BOOT_S = $(SRC_DIR)/boot/boot.s
+CONWAY_C = $(SRC_DIR)/kernel/conway.c
 KERNEL_C = $(SRC_DIR)/kernel/kernel.c
+GRAPHICS_C = $(SRC_DIR)/kernel/graphics.c
 LINKER_LD = $(SRC_DIR)/boot/linker.ld
 
 # archivos objeto
 BOOT_O = $(BUILD_DIR)/boot.o
 KERNEL_O = $(BUILD_DIR)/kernel.o
+GRAPHICS_O = $(BUILD_DIR)/graphics.o
+CONWAY_O = $(BUILD_DIR)/conway.o
 
 # kernel binario
 KERNEL_BIN = $(ISO_DIR)/boot/kernel.bin
@@ -50,18 +55,30 @@ $(KERNEL_O): $(KERNEL_C) | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $(KERNEL_C) -o $(KERNEL_O)
 	@echo "kernel.o creado"
 
-# enlazar kernel
-$(KERNEL_BIN): $(BOOT_O) $(KERNEL_O) $(LINKER_LD) | $(ISO_DIR)/boot/grub
-	@echo "Enlazando kernel..."
-	$(LD) $(LDFLAGS) $(BOOT_O) $(KERNEL_O) -o $(KERNEL_BIN)
-	@echo " kernel.bin creado"
+# compilar graphics.c
+$(GRAPHICS_O): $(GRAPHICS_C) | $(BUILD_DIR)
+	@echo "Compilando graphics.c..."
+	$(CC) $(CFLAGS) -c $(GRAPHICS_C) -o $(GRAPHICS_O)
+	@echo "graphics.o creado"
 
-# verificar que es un kernel multiboot valido
+# compilar conway.c
+$(CONWAY_O): $(CONWAY_C) | $(BUILD_DIR)
+	@echo "Compilando conway.c..."
+	$(CC) $(CFLAGS) -c $(CONWAY_C) -o $(CONWAY_O)
+	@echo "conway.o creado"
+
+# enlazar kernel
+$(KERNEL_BIN): $(BOOT_O) $(KERNEL_O) $(GRAPHICS_O) $(CONWAY_O) $(LINKER_LD) | $(ISO_DIR)/boot/grub
+	@echo "Enlazando kernel..."
+	$(LD) $(LDFLAGS) $(BOOT_O) $(KERNEL_O) $(CONWAY_O) $(GRAPHICS_O) -o $(KERNEL_BIN)
+	@echo "kernel.bin creado"
+
+# verificar que es un kernel multiboot vÃ¡lido
 verify: $(KERNEL_BIN)
 	@if grub-file --is-x86-multiboot $(KERNEL_BIN); then \
-		echo "Kernel multiboot válido"; \
+		echo "Kernel multiboot vÃ¡lido"; \
 	else \
-		echo "ERROR: Kernel NO es multiboot válido"; \
+		echo "ERROR: Kernel NO es multiboot vÃ¡lido"; \
 		exit 1; \
 	fi
 
@@ -79,8 +96,7 @@ clean:
 	rm -f $(KERNEL_BIN)
 	rm -f $(ISO_FILE)
 
-
-#limpiar todo incluyendo directorios
+# limpiar todo incluyendo directorios
 distclean: clean
 	rm -rf $(ISO_DIR)/boot
 
