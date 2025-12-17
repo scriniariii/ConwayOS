@@ -21,17 +21,17 @@ enum vga_color {
     VGA_WHITE = 15,
 };
 
-// Crear atributo de color VGA
+// crear atributo de color VGA
 static inline unsigned char vga_entry_color(enum vga_color fg, enum vga_color bg) {
     return fg | (bg << 4);
 }
 
-// Crear entrada VGA (caracter + color)
+// xrear entrada VGA (caracter + color)
 static inline unsigned short vga_entry(unsigned char c, unsigned char color) {
     return (unsigned short)c | ((unsigned short)color << 8);
 }
 
-// Calcular longitud de string
+// calcular longitud de string
 int strlen(const char* str) {
     int len = 0;
     while (str[len])
@@ -39,7 +39,7 @@ int strlen(const char* str) {
     return len;
 }
 
-// Limpiar pantalla
+// limpiar pantalla
 void clear_screen(void) {
     volatile unsigned short* video = (volatile unsigned short*) VGA_MEMORY;
     unsigned char color = vga_entry_color(VGA_BLACK, VGA_BLACK);
@@ -50,12 +50,12 @@ void clear_screen(void) {
     }
 }
 
-// Escribir string con MÁXIMA protección contra desbordamiento
+// scribir string
 void print(const char* str, int row, int col, enum vga_color fg, enum vga_color bg) {
-    // VALIDACIÓN CRÍTICA: verificar límites ANTES de hacer nada
+    // verificar límites antes de hacer nada
     if (!str) return;  // String nulo
-    if (row < 0 || row >= VGA_HEIGHT) return;  // Fila inválida
-    if (col < 0 || col >= VGA_WIDTH) return;   // Columna inválida
+    if (row < 0 || row >= VGA_HEIGHT) return;  // fila invalida
+    if (col < 0 || col >= VGA_WIDTH) return;   // columna invalida
     
     volatile unsigned short* video = (volatile unsigned short*) VGA_MEMORY;
     unsigned char color = vga_entry_color(fg, bg);
@@ -63,7 +63,7 @@ void print(const char* str, int row, int col, enum vga_color fg, enum vga_color 
     int len = strlen(str);
     int pos = row * VGA_WIDTH + col;
     
-    // Escribir solo lo que cabe
+    // escribir solo lo que entra
     for (int i = 0; i < len; i++) {
         // Verificar que no nos salgamos de la pantalla
         if ((col + i) >= VGA_WIDTH) break;
@@ -73,29 +73,32 @@ void print(const char* str, int row, int col, enum vga_color fg, enum vga_color 
     }
 }
 
-// Función opening COMPLETAMENTE REESCRITA y SEGURA
 void opening() {
     clear_screen();
     
-    // TODAS las coordenadas ahora son SEGURAS
     // Formato: print(texto, fila, columna, color_texto, color_fondo)
     // Filas: 0-24, Columnas: 0-79
+
+    print("  /$$$$$$                                                         ", 2, 3, VGA_LIGHT_CYAN, VGA_BLACK);
+    print(" /$$__  $$                                                       ", 3, 3, VGA_LIGHT_CYAN, VGA_BLACK);
+    print("| $$  \\__/  /$$$$$$  /$$$$$$$  /$$  /$$  /$$  /$$$$$$  /$$   /$$|", 4, 3, VGA_LIGHT_CYAN, VGA_BLACK);
+    print("|| $$       /$$__  $$| $$__  $$| $$ | $$ | $$ |____  $$| $$  | $$|", 5, 3, VGA_LIGHT_CYAN, VGA_BLACK);
+    print("| $$      | $$  \\ $$| $$  \\ $$| $$ | $$ | $$  /$$$$$$$| $$  | $$|", 6, 3, VGA_LIGHT_CYAN, VGA_BLACK);
+    print("| $$    $$| $$  | $$| $$  | $$| $$ | $$ | $$ /$$__  $$| $$  | $$|", 7, 3, VGA_LIGHT_CYAN, VGA_BLACK);
+    print("|  $$$$$$/|  $$$$$$/| $$  | $$|  $$$$$/$$$$/|  $$$$$$$|  $$$$$$$|", 8, 3, VGA_LIGHT_CYAN, VGA_BLACK);
+    print(" \\______/  \\______/ |__/  |__/ \\_____/\\___/  \\_______/ \\____  $$ ", 9, 3, VGA_LIGHT_CYAN, VGA_BLACK);
+    print("                                                       /$$  | $$                    ", 10, 3, VGA_LIGHT_CYAN, VGA_BLACK);
+    print("                                                      |  $$$$$$/                    ", 11, 3, VGA_LIGHT_CYAN, VGA_BLACK);
+    print("                                                       \\______/                     ", 12, 3, VGA_LIGHT_CYAN, VGA_BLACK);
     
-    print("======================================", 2, 20, VGA_LIGHT_CYAN, VGA_BLACK);
-    print("          ConwayOS v1.0              ", 3, 20, VGA_LIGHT_CYAN, VGA_BLACK);
-    print("     Conway's Game of Life OS       ", 4, 20, VGA_WHITE, VGA_BLACK);
-    print("======================================", 5, 20, VGA_LIGHT_CYAN, VGA_BLACK);
+    print("Conway's Game of Life OS (ConwayOS)       ", 14, 20, VGA_WHITE, VGA_BLACK);
+
+    print("Controls:", 15, 30, VGA_YELLOW, VGA_BLACK);
+    print("SPACE : Toggle cell", 16, 25, VGA_LIGHT_GREY, VGA_BLACK);
+    print("ENTER : Play/Pause", 17, 25, VGA_LIGHT_GREY, VGA_BLACK);
+    print("  C   : Clear grid", 18, 25, VGA_LIGHT_GREY, VGA_BLACK);
+    print("  R   : Random", 19, 25, VGA_LIGHT_GREY, VGA_BLACK);
+    print("LEFT CTRL TO LEAVE", 20, 25, VGA_RED, VGA_BLACK);
     
-    print("Controls:", 8, 30, VGA_YELLOW, VGA_BLACK);
-    print("SPACE : Toggle cell", 10, 25, VGA_LIGHT_GREY, VGA_BLACK);
-    print("ENTER : Play/Pause", 11, 25, VGA_LIGHT_GREY, VGA_BLACK);
-    print("C     : Clear grid", 12, 25, VGA_LIGHT_GREY, VGA_BLACK);
-    print("R     : Random", 13, 25, VGA_LIGHT_GREY, VGA_BLACK);
-    
-    print("Patterns:", 15, 30, VGA_YELLOW, VGA_BLACK);
-    print("G : Glider", 17, 25, VGA_LIGHT_GREY, VGA_BLACK);
-    print("B : Blinker", 18, 25, VGA_LIGHT_GREY, VGA_BLACK);
-    print("T : Toad", 19, 25, VGA_LIGHT_GREY, VGA_BLACK);
-    
-    print("Press any key to start...", 22, 27, VGA_GREEN, VGA_BLACK);
+    print("Press any key to start...", 22, 25, VGA_GREEN, VGA_BLACK);
 }
